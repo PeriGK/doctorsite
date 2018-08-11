@@ -11,29 +11,46 @@ class App extends Component {
     super()
     this.state = {
       url: '',
-      proxy: 'https://cors-anywhere.herokuapp.com/'
+      proxy: 'https://cors-anywhere.herokuapp.com/',
+      verification_text: '',
+      status: false
+    }
+  }
+
+  updateVerificationText(e) {
+    this.setState({verification_text: e.currentTarget.value})
+  }
+
+  checkVerificationText(body) {
+    if (body.includes(this.verification_text)) {
+      alert('No such text found')
+    } else {
+      alert('Wooooooo')
+    }
+  }
+
+  verifyStatus(status) {
+    if (status) {
+      alert('site is up')
+    } else {
+      alert('site is fucked up')
     }
   }
 
   checkSite() {
-    let status
     fetch(this.state.proxy + this.state.url)
     .then(response => {
-      debugger
-      status = response.status
-      return status
+      this.setState({status: response.status})
+      return response
     })
-    .then(status => {
-      if (status) {
-        alert('site is up')
-      } else {
-        alert('site is fucked up')
-      }
+    .then(response_object => {
+      console.log(response_object)
+      this.verifyStatus(response_object.status)
+      this.checkVerificationText(response_object.body)
     })
   }
 
   updateURLToCheck(e) {
-    debugger
     this.setState({url: e.currentTarget.value})
   }
 
@@ -51,7 +68,7 @@ class App extends Component {
           <input type='text' placeholder='Enter URL for check here' onChange={this.updateURLToCheck.bind(this)}/>
           <button onClick={this.checkSite.bind(this)}>Hit me</button>
           <br/>
-          <input type='text' placeholder='(Optional)Text to test for' onChange={this.updateURLToCheck.bind(this)}/>
+          <input type='text' placeholder='(Optional)Text to test for' onChange={this.updateVerificationText.bind(this)}/>
         </div>
       </AppContext.Provider>
     );
