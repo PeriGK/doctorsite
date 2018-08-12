@@ -3,10 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import ResultViewer from './ResultViewer'
 
-export const AppContext = React.createContext()
 
 class App extends Component {
-
 
   constructor() {
     super()
@@ -14,8 +12,9 @@ class App extends Component {
       url: '',
       proxy: 'https://cors-anywhere.herokuapp.com/',
       verification_text: '',
-      status: false,
-      fetching: false
+      status: 'N/A',
+      fetching: false,
+      text_found: false
     }
   }
 
@@ -24,15 +23,19 @@ class App extends Component {
   }
 
   checkVerificationText(body) {
-    if (body.includes(this.verification_text)) {
-      alert('No such text found')
+    if (body.includes(this.state.verification_text)) {
+      this.setState({text_found: true})
     } else {
-      alert('Wooooooo')
+      this.setState({text_found: false})
     }
   }
 
+  isSuccessfullRequest(status) {
+    return status >= 200 && status <=299
+  }
+
   verifyStatus(status) {
-    if (status) {
+    if (this.isSuccessfullRequest(status)) {
       alert('site is up')
     } else {
       alert('site is fucked up')
@@ -45,12 +48,12 @@ class App extends Component {
     .then(response => {
       this.setState({fetching: false})
       this.setState({status: response.status})
-      return response
+      console.log(response)
+      this.verifyStatus(response.status)
+      return response.text()
     })
-    .then(response_object => {
-      console.log(response_object)
-      this.verifyStatus(response_object.status)
-      this.checkVerificationText(response_object.body)
+    .then(text => {
+      return this.checkVerificationText(text)
     })
   }
 
@@ -59,8 +62,8 @@ class App extends Component {
   }
 
   render() {
+    console.log(this.state.text_found)
     return (
-      <AppContext.Provider value={this.state}>
         <div className="App">
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
@@ -69,14 +72,16 @@ class App extends Component {
           <p className="App-intro">
             To get started, edit <code>src/App.js</code> and save to reload.
           </p>
-          <input type='text' placeholder='Enter URL for check here' onChange={this.updateURLToCheck.bind(this)}/>
-          <button onClick={this.checkSite.bind(this)}>Hit me</button>
+          <input type='text' placeholder='Enter URL for check here'
+            onChange={this.updateURLToCheck.bind(this)}/>
           <br/>
           <input type='text' placeholder='(Optional)Text to test for' 
             onChange={this.updateVerificationText.bind(this)}/>
-          <ResultViewer status={this.state.status} fetching={this.state.fetching}/>
+          <br/>
+          <button onClick={this.checkSite.bind(this)}>Hit me</button>          
+          <ResultViewer status={this.state.status} fetching={this.state.fetching} 
+            text_found={this.state.text_found ? 'Yes' : 'No'}/>
         </div>
-      </AppContext.Provider>
     );
   }
 }
