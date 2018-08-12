@@ -4,17 +4,19 @@ import './App.css';
 
 class ResultViewer extends Component {
     render() {
-
+        console.log(this.props.text_found)
         if (!this.props.fetching) {
-
             return (
-            <div>
-                <div>
-                    
-                </div>
+            <div class='results'>
+                Is online: {this.props.status}
+                <br/>
+                Text found: {this.props.text_found}
             </div>)
         } else {
-            return <div>Waiting to fetch</div>
+            return (
+            <div class='results'>
+                Waiting to fetch
+            </div>)
         }
     }
 
