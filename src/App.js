@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import ResultViewer from './ResultViewer'
 
 export const AppContext = React.createContext()
 
@@ -13,7 +14,8 @@ class App extends Component {
       url: '',
       proxy: 'https://cors-anywhere.herokuapp.com/',
       verification_text: '',
-      status: false
+      status: false,
+      fetching: false
     }
   }
 
@@ -38,8 +40,10 @@ class App extends Component {
   }
 
   checkSite() {
+    this.setState({fetching: true})
     fetch(this.state.proxy + this.state.url)
     .then(response => {
+      this.setState({fetching: false})
       this.setState({status: response.status})
       return response
     })
@@ -68,7 +72,9 @@ class App extends Component {
           <input type='text' placeholder='Enter URL for check here' onChange={this.updateURLToCheck.bind(this)}/>
           <button onClick={this.checkSite.bind(this)}>Hit me</button>
           <br/>
-          <input type='text' placeholder='(Optional)Text to test for' onChange={this.updateVerificationText.bind(this)}/>
+          <input type='text' placeholder='(Optional)Text to test for' 
+            onChange={this.updateVerificationText.bind(this)}/>
+          <ResultViewer status={this.state.status} fetching={this.state.fetching}/>
         </div>
       </AppContext.Provider>
     );
