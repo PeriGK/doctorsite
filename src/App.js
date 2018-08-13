@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import logo from './logo.png';
 import './App.css';
 import ResultViewer from './ResultViewer'
 
@@ -23,7 +23,8 @@ class App extends Component {
   }
 
   checkVerificationText(body) {
-    if (body.includes(this.state.verification_text)) {
+    if (body.includes(this.state.verification_text) 
+      && this.state.verification_text !== '') {
       this.setState({text_found: true})
     } else {
       this.setState({text_found: false})
@@ -36,9 +37,9 @@ class App extends Component {
 
   verifyStatus(status) {
     if (this.isSuccessfullRequest(status)) {
-      alert('site is up')
+      alert('Site is up...beer time')
     } else {
-      alert('site is fucked up')
+      alert('Looks like I didnt get a happy answer from the site')
     }
   }
 
@@ -67,19 +68,22 @@ class App extends Component {
         <div className="App">
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
-            <h1 className="App-title">Welcome to React</h1>
+            <h1 className="App-title">Welcome to Doctor Site.</h1>
+            <h2 className="App-subtitle">Check the health of your page easily</h2>
           </header>
           <p className="App-intro">
-            To get started, edit <code>src/App.js</code> and save to reload.
+            Enter the URL of the site you want to check. If you want to verify a certain piece
+            of text is present, enter that as well
           </p>
           <input type='text' placeholder='Enter URL for check here'
             onChange={this.updateURLToCheck.bind(this)}/>
           <br/>
-          <input type='text' placeholder='(Optional)Text to test for' 
+          <input type='text' placeholder='(Optional)Text to test for'
             onChange={this.updateVerificationText.bind(this)}/>
           <br/>
-          <button onClick={this.checkSite.bind(this)}>Hit me</button>          
-          <ResultViewer status={this.state.status} fetching={this.state.fetching} 
+          <button onClick={this.checkSite.bind(this)}>Hit me</button>
+          <br/>
+          <ResultViewer status={this.state.status} fetching={this.state.fetching}
             text_found={this.state.text_found ? 'Yes' : 'No'}/>
         </div>
     );
