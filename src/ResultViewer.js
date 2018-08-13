@@ -14,7 +14,7 @@ class ResultViewer extends Component {
             </div>)
         } else {
             return (
-            <div class='results'>
+            <div className='results'>
                 Waiting to fetch
             </div>)
         }
